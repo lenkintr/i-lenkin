@@ -3,7 +3,7 @@
 //#include <iostream>
 struct ball
 {
-    int x, y;
+    int x;int y;
     int vx; int vy;
     int red; int green; int blue;
     int shadow; int gradient;
@@ -148,29 +148,36 @@ void Control (ball *b)
       if (txGetAsyncKeyState (VK_DOWN))  ++ b -> vy;
       if (txGetAsyncKeyState (VK_SPACE)) {b -> vx = 0; b -> vy = 0;}
 }
+
 void Draw_ball(int sizeX, int sizeY, ball *b)
 {
-      bool f = false;
+      bool changeColor = false;
       if ((*b).x == 0 || (*b).x == sizeX) {(*b).shadow = - (*b).shadow;}
-      if ((*b).x == 0 || (*b).x == sizeX || (*b).y == 0 || (*b).y == sizeY) {f = true;}
+      if ((*b).x == 0 || (*b).x == sizeX || (*b).y == 0 || (*b).y == sizeY) { changeColor = true; }
 
       txSetFillColor (RGB ((*b).red / 3, (*b).green / 3, (*b).blue / 3));
       txCircle ((double) (*b).x - (*b).shadow, (double) (*b).y - (*b).shadow, 20.);
+
       txSetFillColor (RGB ((*b).red / 4, (*b).green / 4, (*b).blue / 4));
       txCircle ((double) (*b).x - (*b).shadow * 2, (double) (*b).y - (*b).shadow * 2, 20.);
+
       txSetColor     (RGB ((*b).red / 2, (*b).green / 2, (*b).blue / 2));
       txSetFillColor (RGB ((*b).red += (*b).gradient, (*b).green += (*b).gradient, (*b).blue += (*b).gradient));
+
       if ((*b).red == 255 || (*b).red == 0 || (*b).green == 255 || (*b).green == 0 || (*b).blue == 250 || (*b).blue == 0 ) (*b).gradient = -(*b).gradient;
       txCircle ((*b).x, (*b).y, 20);
-      if (f)
+
+      if (changeColor)
         {
             COLORREF color = RGB (rand() % 256, rand() % 256, rand() % 256);
-            (*b).red = txExtractColor(color, TX_RED);
+            (*b).red   = txExtractColor(color, TX_RED);
             (*b).green = txExtractColor(color, TX_GREEN);
-            (*b).blue = txExtractColor(color, TX_BLUE);
-            f = false;
+            (*b).blue  = txExtractColor(color, TX_BLUE);
+
+            changeColor = false;
         }
 }
+
 double Distance (double x1, double y1, double x2, double y2)
 {
     double dist = sqrt( (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
